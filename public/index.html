@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FeliCa Authentication</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-mesh"></div>
+    
+    <div class="container">
+        <div class="glass-card" id="main-card">
+            <div class="header">
+                <div class="logo">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2Z" stroke="url(#paint0_linear)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M7 12H17" stroke="url(#paint1_linear)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 7C14.7614 7 17 9.23858 17 12C17 14.7614 14.7614 17 12 17" stroke="url(#paint2_linear)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <defs>
+                            <linearGradient id="paint0_linear" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#00F0FF" />
+                                <stop offset="1" stop-color="#5773FF" />
+                            </linearGradient>
+                            <linearGradient id="paint1_linear" x1="7" y1="12" x2="17" y2="12" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#00F0FF" />
+                                <stop offset="1" stop-color="#5773FF" />
+                            </linearGradient>
+                            <linearGradient id="paint2_linear" x1="12" y1="7" x2="17" y2="17" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#00F0FF" />
+                                <stop offset="1" stop-color="#5773FF" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <h2>NFC Security Gateway</h2>
+            </div>
+            
+            <div id="waiting-state" class="state-container active">
+                <div class="radar-animation">
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="icon-nfc">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 8c2.2-2.7 5.7-4 9-4 3.3 0 6.8 1.3 9 4"></path>
+                            <path d="M6 12c1.7-2 4.4-3 7-3 2.6 0 5.3 1 7 3"></path>
+                            <path d="M8 16c1.1-1.3 2.9-2 4.5-2 1.6 0 3.4.7 4.5 2"></path>
+                            <circle cx="12" cy="20" r="1"></circle>
+                        </svg>
+                    </div>
+                </div>
+                <h3>Waiting for Card...</h3>
+                <p>Please touch your FeliCa Lite-S card to the reader.</p>
+                <div class="status-indicator">
+                    <span class="dot pulse"></span>
+                    <span id="ws-status">Connecting to WebSocket...</span>
+                </div>
+            </div>
+
+            <div id="success-state" class="state-container">
+                <div class="success-icon">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                </div>
+                <h3 class="success-text">Access Granted</h3>
+                
+                <div class="user-profile">
+                    <div class="avatar" id="user-avatar">?</div>
+                    <div class="user-info">
+                        <h4 id="user-name">Unknown User</h4>
+                        <span class="role-badge">Authenticated</span>
+                    </div>
+                </div>
+
+                <div class="card-details">
+                    <div class="detail-row">
+                        <span class="label">NDEF</span>
+                        <span class="value" id="card-ndef">----------------</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Auth Time</span>
+                        <span class="value" id="auth-time">----------------</span>
+                    </div>
+                </div>
+                
+                <button id="reset-btn" class="glow-btn">Scan Another Card</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

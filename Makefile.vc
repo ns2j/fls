@@ -1,0 +1,32 @@
+CXX = cl
+CC = cl
+CXXFLAGS = /EHsc /W3 /O2 /utf-8 /std:c++20
+CFLAGS = /W3 /O2 /utf-8
+LDFLAGS = winscard.lib bcrypt.lib ws2_32.lib
+
+HEADERS = lazypcscfelicalite.h felica_keys.h
+FLS_TARGET = fls.exe
+FLS_OBJS = fls.obj
+
+WS_TARGET = fls_ws.exe
+WS_OBJS = fls_ws.obj mongoose.obj
+
+all: $(FLS_TARGET) $(WS_TARGET)
+
+$(FLS_TARGET): $(FLS_OBJS)
+	link /OUT:$(FLS_TARGET) $(FLS_OBJS) $(LDFLAGS)
+
+$(WS_TARGET): $(WS_OBJS)
+	link /OUT:$(WS_TARGET) $(WS_OBJS) $(LDFLAGS)
+
+$(FLS_OBJS): fls.cpp $(HEADERS)
+$(WS_OBJS): fls_ws.cpp mongoose.c mongoose.h $(HEADERS)
+
+.cpp.obj:
+	$(CXX) $(CXXFLAGS) /c $<
+
+.c.obj:
+	$(CC) $(CFLAGS) /c $<
+
+clean:
+	del /Q *.obj *.exe 2>nul

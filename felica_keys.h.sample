@@ -1,0 +1,11 @@
+#ifndef FELICA_KEYS_H
+#define FELICA_KEYS_H
+
+// すべてのプログラムで共通して使用する FeliCa Lite-S の認証鍵 (CK1, CK2)
+// ここを変更するだけで、pam_felica.so, felica_ws, sample などの全ツールに反映されます。
+
+#define FELICA_CK1_INIT {0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF}
+#define FELICA_CK2_INIT {0xFE, 0xDC, 0xBA, 0x98, 0x76, 0x54, 0x32, 0x10}
+
+
+#endif // FELICA_KEYS_H

@@ -1,0 +1,11 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\Credential Providers\{904a0815-4998-4879-a58b-a59f6e244701}]
+@="FelicaCredentialProvider"
+
+[HKEY_CLASSES_ROOT\CLSID\{904a0815-4998-4879-a58b-a59f6e244701}]
+@="FelicaCredentialProvider"
+
+[HKEY_CLASSES_ROOT\CLSID\{904a0815-4998-4879-a58b-a59f6e244701}\InprocServer32]
+@="C:\\your\\path\\FelicaCredentialProvider.dll"
+"ThreadingModel"="Apartment"

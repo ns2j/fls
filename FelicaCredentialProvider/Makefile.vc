@@ -1,0 +1,21 @@
+CXX = cl
+CXXFLAGS = /EHsc /W3 /O2 /utf-8 /std:c++20
+LDFLAGS = winscard.lib bcrypt.lib shlwapi.lib secur32.lib credui.lib ole32.lib advapi32.lib
+
+TARGET = FelicaCredentialProvider.dll
+OBJS = Dll.obj Provider.obj Credential.obj
+DEF = FelicaCredentialProvider.def
+HEADERS = FelicaProvider.h ..\lazypcscfelicalite.h ..\felica_keys.h
+
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+	link /DLL /DEF:$(DEF) /OUT:$(TARGET) $(OBJS) $(LDFLAGS)
+
+$(OBJS): $(HEADERS)
+
+.cpp.obj:
+	$(CXX) $(CXXFLAGS) /c $<
+
+clean:
+	del /Q *.obj *.dll *.lib *.exp 2>nul

@@ -1,0 +1,11 @@
+*.o
+*.so
+*.exe
+*.obj
+fls
+fls_ws
+felica_keys.h
+*~
+log
+__pycache__/
+Register.reg
