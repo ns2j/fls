@@ -2,6 +2,9 @@
 
 FeliCa Lite-S のセキュアな機能（MAC_Aによる相互認証、NDEF対応）を活用し、システムへの安全なログイン(PAM)やWebSocket経由での認証情報取得などを実現するツール群です。
 
+> **解説記事**: 本ツールの開発背景や詳細な仕組みについては、以下のQiita記事をご参照ください。
+> [FeliCa Lite-SのRC-S300での読み書き(Windows/Linux両対応) - Qiita](https://qiita.com/igariy/items/b819ca1d2f1b6acf6d55)
+
 ## 特徴
 *   **SONY PaSoRi RC-S300 対応:** RC-S300 などの PC/SC 対応 NFC リーダーで動作します。
 *   **FeliCa Lite-Sの相互認証 (MAC_A) 対応:** 不正なカードへの書き込み防止や改ざん検知、読み出し保護に利用できます。
