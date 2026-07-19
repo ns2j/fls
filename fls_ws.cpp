@@ -19,7 +19,9 @@ using namespace LazyPCSCFelicaLite;
 std::mutex ws_mutex;
 std::string latest_user = "";
 std::string latest_ndef = "";
+std::string latest_pass = "";
 bool new_user_read = false;
+bool enable_password = false;
 
 // Mongoose event handler
 static void ev_handler(struct mg_connection *c, int ev, void *ev_data) {
@@ -92,6 +94,21 @@ void felica_thread_func() {
                     }
                     
                     if (strlen(username) > 0) {
+                        // オプションでパスワード(SPAD11)の読み込み
+                        char password[17] = {0};
+                        if (enable_password) {
+                            uint8_t spad_pass[16] = {0};
+                            uint8_t dummy_mac_p[16];
+                            f.readBinaryWithMAC_A(f.ADDRESS_SPAD11, spad_pass, dummy_mac_p);
+                            memcpy(password, spad_pass, 16);
+                            for (int i = 0; i < 16; i++) {
+                                if (password[i] == ' ' || password[i] == '\r' || password[i] == '\n' || password[i] == 0) {
+                                    password[i] = '\0';
+                                    break;
+                                }
+                            }
+                        }
+
                         // NDEFの読み取り
                         std::string ndef_uri = "";
                         try {
@@ -101,8 +118,13 @@ void felica_thread_func() {
                         std::lock_guard<std::mutex> lock(ws_mutex);
                         latest_user = username;
                         latest_ndef = ndef_uri;
+                        latest_pass = password;
                         new_user_read = true;
-                        printf("[FeliCa] カード検知: ユーザー '%s', NDEF: '%s'\n", username, ndef_uri.c_str());
+                        if (enable_password) {
+                            printf("[FeliCa] カード検知: ユーザー '%s', パスワード読出済, NDEF: '%s'\n", username, ndef_uri.c_str());
+                        } else {
+                            printf("[FeliCa] カード検知: ユーザー '%s', NDEF: '%s'\n", username, ndef_uri.c_str());
+                        }
                     }
                 } catch (std::exception &e) {
                     printf("[FeliCa] 読み取りエラー: %s\n", e.what());
@@ -128,18 +150,25 @@ void felica_thread_func() {
     }
 }
 
-int main(void) {
+int main(int argc, char *argv[]) {
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "-p") == 0) {
+            enable_password = true;
+        }
+    }
+    printf("DEBUG: enable_password = %d (argc=%d)\n", enable_password, argc);
+
     struct mg_mgr mgr;
     mg_mgr_init(&mgr);
     
-    const char *url = "ws://0.0.0.0:8080";
+    const char *url = "ws://0.0.0.0:48080";
     if (mg_http_listen(&mgr, url, ev_handler, NULL) == NULL) {
         printf("WebSocketサーバーの起動に失敗しました: %s\n", url);
         return 1;
     }
     
     printf("WebSocketサーバーを起動しました: %s\n", url);
-    printf("ブラウザで http://localhost:8080 にアクセスしてテストできます。\n");
+    printf("ブラウザで http://localhost:48080 にアクセスしてテストできます。\n");
     
     // FeliCa監視スレッドを起動
     std::thread f_thread(felica_thread_func);
@@ -150,18 +179,19 @@ int main(void) {
         mg_mgr_poll(&mgr, 100); // 100msごとにイベント処理
         
         // FeliCa側から新しいユーザー情報が届いているかチェック
-        std::string user_to_send, ndef_to_send;
+        std::string user_to_send, ndef_to_send, pass_to_send;
         {
             std::lock_guard<std::mutex> lock(ws_mutex);
             if (new_user_read) {
                 user_to_send = latest_user;
                 ndef_to_send = latest_ndef;
+                pass_to_send = latest_pass;
                 new_user_read = false;
             }
         }
         
         if (!user_to_send.empty()) {
-            std::string json_msg = "{\"username\": \"" + user_to_send + "\", \"ndef\": \"" + ndef_to_send + "\"}";
+            std::string json_msg = "{\"username\": \"" + user_to_send + "\", \"ndef\": \"" + ndef_to_send + "\", \"password\": \"" + pass_to_send + "\"}";
             for (struct mg_connection *c = mgr.conns; c != NULL; c = c->next) {
                 if (c->is_websocket) {
                     mg_ws_send(c, json_msg.c_str(), json_msg.length(), WEBSOCKET_OP_TEXT);
