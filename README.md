@@ -12,6 +12,7 @@ FeliCa Lite-S のセキュアな機能（MAC_Aによる相互認証、NDEF対応
 *   **Windows Credential Provider (`FelicaCredentialProvider`):** Windows 10/11 のログオン画面でカードをタッチするだけで、安全にWindowsにサインインできます。
 *   **PAMモジュール (`pam_fls.so`):** Linuxシステムのログイン(sudo等)にFeliCaを用いた認証を組み込めます。
 *   **WebSocketサーバー (`fls_ws`):** ブラウザ側のフロントエンドアプリと連携し、カード情報をリアルタイムで送信できます。
+*   **Keycloak 連携:** `fls_ws` を利用して、Keycloak のログイン画面での FeliCa 自動ログインが可能です。詳細は `keycloak/README.md` を参照してください。
 
 ---
 
@@ -115,11 +116,17 @@ nmake /f Makefile.vc
 ```
 
 ### `fls_ws` (WebSocketサーバー)
-ブラウザ等からローカル(ws://localhost:8080/ws)で接続し、かざされたカードから安全に読み取った秘密データ（SPAD10のユーザ名など）をリアルタイムに受け取ることができます。WebアプリでのFeliCa連携に利用します。
+ブラウザ等からローカル(ws://localhost:48080/ws)で接続し、かざされたカードから安全に読み取った秘密データ（SPAD10のユーザ名など）をリアルタイムに受け取ることができます。WebアプリでのFeliCa連携に利用します。
+
+起動時に `-p` オプションを付けることで、パスワード(SPAD11)も同時に読み取って送信できます。
 
 ```bash
-./fls_ws
+./fls_ws -p
 ```
+
+> **Keycloak 連携**
+> 付属のテーマスクリプトを使用することで、Keycloakでの自動ログインが可能です。
+> 詳しい設定方法は `keycloak/README.md` を参照してください。
 
 ### `pam_fls.so` (PAMモジュール)
 Linuxシステムの `/etc/pam.d/sudo` 等に追記することで、パスワード入力の代わりにFeliCaをかざし、SPAD10のユーザ名情報を用いて認証を実現できます。
