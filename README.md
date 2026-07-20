@@ -128,6 +128,10 @@ nmake /f Makefile.vc
 > 付属のテーマスクリプトを使用することで、Keycloakでの自動ログインが可能です。
 > 詳しい設定方法は `keycloak/README.md` を参照してください。
 
+> **サービス化（バックグラウンド自動起動）**
+> - **Linux (systemd)**: 設定手順は `README.systemd.md` を参照してください。
+> - **Windows (WinSW)**: 設定手順は `README.WindowsService.md` を参照してください。
+
 ### `pam_fls.so` (PAMモジュール)
 Linuxシステムの `/etc/pam.d/sudo` 等に追記することで、パスワード入力の代わりにFeliCaをかざし、SPAD10のユーザ名情報を用いて認証を実現できます。
 *(設定方法はシステムのPAM仕様に従ってください)*
