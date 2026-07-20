@@ -3,7 +3,7 @@ import json
 import websockets
 
 async def listen_to_fls():
-    url = "ws://localhost:8080/ws"
+    url = "ws://localhost:48080/ws"
     print(f"WebSocketサーバー ({url}) に接続しています...")
     
     try:
