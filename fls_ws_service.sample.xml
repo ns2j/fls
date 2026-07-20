@@ -1,0 +1,17 @@
+<service>
+  <id>fls_ws</id>
+  <name>FeliCa WebSocket Server</name>
+  <description>Keycloak連携用のFeliCa WebSocketサーバーを提供します。</description>
+  
+  <!-- 実行するプログラムのパス (必ずフルパスで指定してください) -->
+  <executable>C:\your\path\fls\fls_ws.exe</executable>
+  
+  <!-- Keycloak用にパスワードも取得するための -p オプションを指定 -->
+  <!-- <arguments>-p</arguments> -->
+  
+  <!-- ログ出力の設定（標準出力をファイルにローテーション保存） -->
+  <logmode>roll</logmode>
+  
+  <!-- 万が一クラッシュした場合は自動で再起動する -->
+  <onfailure action="restart" delay="10 sec"/>
+</service>
