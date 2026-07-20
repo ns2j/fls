@@ -9,8 +9,17 @@ PAM_PROGRAM = pam_fls.so
 PAM_SOURCES = pam_fls.cpp
 
 # Linux
-PCSC_CFLAGS := $(shell pkg-config --cflags libpcsclite) $(shell pkg-config --cflags mbedtls)
-LDFLAGS := $(shell pkg-config --libs libpcsclite) $(shell pkg-config --libs mbedtls) $(shell pkg-config -libs mbedcrypto)
+HAS_MBEDTLS_PC := $(shell pkg-config --exists mbedtls 2>/dev/null && echo yes)
+
+PCSC_CFLAGS := $(shell pkg-config --cflags libpcsclite 2>/dev/null)
+LDFLAGS := $(shell pkg-config --libs libpcsclite 2>/dev/null)
+
+ifeq ($(HAS_MBEDTLS_PC),yes)
+    PCSC_CFLAGS += $(shell pkg-config --cflags mbedtls 2>/dev/null)
+    LDFLAGS += $(shell pkg-config --libs mbedtls mbedcrypto 2>/dev/null)
+else
+    LDFLAGS += -lmbedtls -lmbedcrypto
+endif
 
 # Mac OS X
 #PCSC_CFLAGS := -framework PCSC
